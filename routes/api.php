@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\LivroController;
-use App\Http\Controllers\AutorController;
 use App\Http\Controllers\AssuntoController;
+use App\Http\Controllers\AutorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -31,9 +31,24 @@ class AutorController extends Controller
         return response()->json($autor, 200);
     }
 
-    public function destroy(Autor $autor)
+    public function destroy($id)
     {
-        $autor->delete();
+        // Encontre o autor pelo ID
+        $autor = Autor::findOrFail($id);
+
+        // Excluir registros nas tabelas associativas
+        $autor->livros()->detach();
+
+        // Verificar se os registros associativos foram excluídos
+        if ($autor->livros()->count() > 0) {
+            return response()->json(['error' => 'Falha ao excluir registros associativos.'], 500);
+        }
+
+        // Excluir o autor
+        if (!$autor->delete()) {
+            return response()->json(['error' => 'Falha ao excluir o autor.'], 500);
+        }
+
         return response()->json(null, 204);
     }
 }

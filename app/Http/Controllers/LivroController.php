@@ -13,9 +13,14 @@ class LivroController extends Controller
 
     public function store(Request $request)
     {
+        // Criação do livro
         $livro = Livro::create($request->all());
+
+        // Sincronização dos autores e assuntos
         $livro->autores()->sync($request->input('autores', []));
         $livro->assuntos()->sync($request->input('assuntos', []));
+
+        // Retorno da resposta
         return response()->json($livro, 201);
     }
 
@@ -34,7 +39,13 @@ class LivroController extends Controller
 
     public function destroy(Livro $livro)
     {
+        // Excluir registros nas tabelas associadas
+        $livro->assuntos()->detach();
+        $livro->autores()->detach();
+    
+        // Excluir o livro
         $livro->delete();
+    
         return response()->json(null, 204);
     }
 }

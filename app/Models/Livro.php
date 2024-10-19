@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Livro extends Model
 {
     protected $primaryKey = 'cod';
+    protected $fillable = [
+        'titulo',
+        'Editora',
+        'Edicao',
+        'AnoPublicacao'
+    ];
 
     public function autores() 
     {

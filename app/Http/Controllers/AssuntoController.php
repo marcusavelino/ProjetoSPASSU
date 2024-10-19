@@ -32,7 +32,10 @@ class AssuntoController extends Controller
     }
 
     public function destroy(Assunto $assunto)
-    {
+    {   
+        // Excluir registros nas tabelas associativas
+        $assunto->livros()->detach();
+        
         $assunto->delete();
         return response()->json(null, 204);
     }
