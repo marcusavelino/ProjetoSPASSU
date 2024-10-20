@@ -10,6 +10,7 @@
       <div class="modal-body">
         <form id="formAddNewBook">
           @csrf
+          <input type="hidden" id="bookId" name="bookId">
           <div class="mb-3">
             <label for="titulo" class="form-label">Título</label>
             <input type="text" class="form-control" id="titulo" name="titulo" required>
@@ -29,13 +30,13 @@
           <div class="mb-3">
             <label for="autores" class="form-label">Autores</label>
             <select multiple class="form-control" id="autores" name="autores[]">
-
+              <!-- Options will be populated dynamically -->
             </select>
           </div>
           <div class="mb-3">
             <label for="assuntos" class="form-label">Assuntos</label>
             <select multiple class="form-control" id="assuntos" name="assuntos[]">
-
+              <!-- Options will be populated dynamically -->
             </select>
           </div>
           <button type="submit" class="btn btn-primary">Salvar</button>

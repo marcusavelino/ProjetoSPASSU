@@ -24,8 +24,9 @@ class AssuntoController extends Controller
         return $assunto->load('livros');
     }
 
-    public function update(Request $request, Assunto $assunto)
+    public function update(Request $request, $id)
     {
+        $assunto = Assunto::findOrFail($id);
         $assunto->update($request->all());
         $assunto->livros()->sync($request->input('livros', []));
         return response()->json($assunto, 200);

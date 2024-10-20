@@ -1,8 +1,12 @@
+import { deleteAuthor } from './ajaxForm.js';
+
 document.addEventListener('DOMContentLoaded', function () {
   const apiUrl = 'http://127.0.0.1:8000/api/autores'; // Substitua pela URL da sua API
   const tableAutoresBody = document.querySelector('#autoresTable tbody');
   const formLivroAutores = document.querySelector('#autores');
   const noAutoresMessage = document.querySelector('#noAutoresMessage');
+  const formAddNewAuthor = document.querySelector('#formAddNewAuthor');
+  const modalFormAddNewAuthor = new bootstrap.Modal(document.getElementById('modalFormAddNewAuthor'));
 
   fetch(apiUrl)
     .then(response => response.json())
@@ -14,13 +18,12 @@ document.addEventListener('DOMContentLoaded', function () {
         noAutoresMessage.style.display = 'none';
         tableAutoresBody.parentElement.style.display = 'table';
         data.forEach(autor => {
-          console.log(autor);
           let row = document.createElement('tr');
           row.innerHTML = `
             <td>${autor.CodAu}</td>
             <td>${autor.Nome}</td>
             <td>
-              <button class="btn btn-sm btn-primary update-btn" data-id="${autor.CodAu}">Update</button>
+              <button class="btn btn-sm btn-primary update-author" data-id="${autor.CodAu}" data-nome="${autor.Nome}">Update</button>
               <button class="btn btn-sm btn-danger delete-btn delete-author" data-id="${autor.CodAu}">Delete</button>
             </td>
           `;
@@ -34,12 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Adicionar event listeners para os botões de update e delete
-        document.querySelectorAll('.update-btn').forEach(button => {
-          button.addEventListener('click', handleUpdate);
+        document.querySelectorAll('.update-author').forEach(button => {
+          button.addEventListener('click', handleUpdateAuthor);
         });
 
         document.querySelectorAll('.delete-author').forEach(button => {
-          button.addEventListener('click', handleDeleteAuthor);
+          button.addEventListener('click', function(event) {
+            const id = event.target.getAttribute('data-id');
+            deleteAuthor(id);
+          });
         });
       }
     })
@@ -49,37 +55,18 @@ document.addEventListener('DOMContentLoaded', function () {
       noAutoresMessage.textContent = 'Erro ao buscar autores. Tente novamente mais tarde.';
     });
 
-  function handleUpdate(event) {
+  function handleUpdateAuthor(event) {
     const id = event.target.getAttribute('data-id');
-    // Aqui você pode abrir um modal para editar o autor ou redirecionar para uma página de edição
-    // Exemplo de redirecionamento para uma página de edição
-    window.location.href = `/autores/${id}/edit`;
-  }
+    const nome = event.target.getAttribute('data-nome');
 
-  function handleDeleteAuthor(event) {
-    const id = event.target.getAttribute('data-id');
-    if (confirm('Tem certeza que deseja deletar este autor?')) {
-      fetch(`${apiUrl}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-      .then(response => {
-        console.log(`${apiUrl}/${id}`);
-        if (response.ok) {
-          alert('Autor deletado com sucesso!');
-          // Remover a linha da tabela
-          event.target.closest('tr').remove();
-        } else {
-          console.log(response);
-          alert('Erro ao deletar autor.');
-        }
-      })
-      .catch(error => {
-        console.error('Erro ao deletar autor:', error);
-        alert('Erro ao deletar autor. Tente novamente mais tarde.');
-      });
-    }
+    // Preencher o formulário com os dados do autor
+    document.querySelector('#authorId').value = id;
+    document.querySelector('#authorName').value = nome;
+
+    // Alterar o título do modal
+    document.querySelector('#title-modal-author').textContent = 'Atualizar Autor';
+
+    // Abrir o modal
+    modalFormAddNewAuthor.show();
   }
 });

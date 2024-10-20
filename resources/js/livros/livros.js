@@ -1,7 +1,10 @@
+import { deleteBook } from './ajaxForm.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   const apiUrl = 'http://127.0.0.1:8000/api/livros'; // Substitua pela URL da sua API
   const tableBody = document.querySelector('#livrosTable tbody');
   const noBooksMessage = document.querySelector('#noBooksMessage');
+  const modal = document.querySelector('#modalFormAddNew');
 
   fetch(apiUrl)
     .then(response => response.json())
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <td>${livro.Edicao}</td>
             <td>${livro.Editora}</td>
             <td>
-              <button class="btn btn-sm btn-primary update-btn" data-id="${livro.cod}">Update</button>
+              <button class="btn btn-sm btn-primary update-btn" data-id="${livro.cod}" data-titulo="${livro.Titulo}" data-editora="${livro.Editora}" data-edicao="${livro.Edicao}" data-anopublicacao="${livro.AnoPublicacao}" data-autores="${livro.autores.map(autor => autor.id).join(',')}" data-assuntos="${livro.assuntos.map(assunto => assunto.codAs).join(',')}">Update</button>
               <button class="btn btn-sm btn-danger delete-btn" data-id="${livro.cod}">Delete</button>
             </td>
           `;
@@ -43,36 +46,54 @@ document.addEventListener('DOMContentLoaded', function() {
       noBooksMessage.textContent = 'Erro ao buscar livros. Tente novamente mais tarde.';
     });
 
-    function handleUpdate(event) {
-      const id = event.target.getAttribute('data-id');
-      // Aqui você pode abrir um modal para editar o livro ou redirecionar para uma página de edição
-      // Exemplo de redirecionamento para uma página de edição
-      window.location.href = `/livros/${id}/edit`;
-    }
+  function handleUpdate(event) {
+    const id = event.target.getAttribute('data-id');
+    const titulo = event.target.getAttribute('data-titulo');
+    const editora = event.target.getAttribute('data-editora');
+    const edicao = event.target.getAttribute('data-edicao');
+    const anoPublicacao = event.target.getAttribute('data-anopublicacao');
+    const autores = event.target.getAttribute('data-autores').split(',');
+    const assuntos = event.target.getAttribute('data-assuntos').split(',');
 
-    function handleDelete(event) {
-      const id = event.target.getAttribute('data-id');
-      if (confirm('Tem certeza que deseja deletar este livro?')) {
-        fetch(`${apiUrl}/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          if (response.ok) {
-            alert('Livro deletado com sucesso!');
-            // Remover a linha da tabela
-            event.target.closest('tr').remove();
-          } else {
-            console.log(response);
-            alert('Erro ao deletar livro.');
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao deletar livro:', error);
-          alert('Erro ao deletar livro. Tente novamente mais tarde.');
-        });
-      }
+    // Preencher o formulário com os dados do livro
+    document.querySelector('#bookId').value = id;
+    document.querySelector('#titulo').value = titulo;
+    document.querySelector('#Editora').value = editora;
+    document.querySelector('#Edicao').value = edicao;
+    document.querySelector('#AnoPublicacao').value = anoPublicacao;
+    document.querySelector('#autores').value = autores;
+    document.querySelector('#assuntos').value = assuntos;
+
+    // Alterar o título do modal
+    document.querySelector('#exampleModalLabel').textContent = 'Atualizar Livro';
+
+    // Abrir o modal
+    $(modal).modal('show');
+  }
+
+  function handleDelete(event) {
+    const id = event.target.getAttribute('data-id');
+    if (confirm('Tem certeza que deseja deletar este livro?')) {
+      fetch(`${apiUrl}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Livro deletado com sucesso!');
+          // Remover a linha da tabela
+          event.target.closest('tr').remove();
+        } else {
+          console.log(response);
+          alert('Erro ao deletar livro.');
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao deletar livro:', error);
+        alert('Erro ao deletar livro. Tente novamente mais tarde.');
+      });
     }
+  }
 });

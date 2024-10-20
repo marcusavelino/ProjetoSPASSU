@@ -1,8 +1,14 @@
+import { deleteTopic } from './ajaxForm.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   const apiUrl = 'http://127.0.0.1:8000/api/assuntos'; // Substitua pela URL da sua API
   const tableAssuntosBody = document.querySelector('#assuntosTable tbody');
   const formLivroAssuntos = document.querySelector('#assuntos');
   const noAssunMessage = document.querySelector('#noAssuntosMessage');
+  const modal = document.querySelector('#modalFormAddNewTopic');
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalForm = modal.querySelector('form');
+  const modalDescricao = modalForm.querySelector('#descricao');
 
   fetch(apiUrl)
     .then(response => response.json())
@@ -19,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <td>${assunto.codAs}</td>
             <td>${assunto.Descricao}</td>
             <td>
-              <button class="btn btn-sm btn-primary update-btn" data-id="${assunto.codAs}">Update</button>
+              <button class="btn btn-sm btn-primary update-topic" data-id="${assunto.codAs}" data-descricao="${assunto.Descricao}">Update</button>
               <button class="btn btn-sm btn-danger delete-btn delete-topic" data-id="${assunto.codAs}">Delete</button>
             </td>
           `;
@@ -33,12 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Adicionar event listeners para os botões de update e delete
-        document.querySelectorAll('.update-btn').forEach(button => {
-          button.addEventListener('click', handleUpdate);
+        document.querySelectorAll('.update-topic').forEach(button => {
+          button.addEventListener('click', handleUpdateTopic);
         });
 
         document.querySelectorAll('.delete-topic').forEach(button => {
-          button.addEventListener('click', handleDeleteTopic);
+          button.addEventListener('click', function(event) {
+            const id = event.target.getAttribute('data-id');
+            deleteTopic(id);
+          });
         });
       }
     })
@@ -48,36 +57,18 @@ document.addEventListener('DOMContentLoaded', function() {
       noBooksMessage.textContent = 'Erro ao buscar assuntos. Tente novamente mais tarde.';
     });
 
-    function handleUpdate(event) {
-      const id = event.target.getAttribute('data-id');
-      // Aqui você pode abrir um modal para editar o assunto ou redirecionar para uma página de edição
-      // Exemplo de redirecionamento para uma página de edição
-      window.location.href = `/assuntos/${id}/edit`;
-    }
-  
-    function handleDeleteTopic(event) {
-      const id = event.target.getAttribute('data-id');
-      if (confirm('Tem certeza que deseja deletar este assunto?')) {
-        fetch(`${apiUrl}/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        .then(response => {
-          if (response.ok) {
-            alert('Assunto deletado com sucesso!');
-            // Remover a linha da tabela
-            event.target.closest('tr').remove();
-          } else {
-            console.log(response);
-            alert('Erro ao deletar assunto.');
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao deletar assunto:', error);
-          alert('Erro ao deletar assunto. Tente novamente mais tarde.');
-        });
-      }
-    }
+  function handleUpdateTopic(event) {
+    const id = event.target.getAttribute('data-id');
+    const descricao = event.target.getAttribute('data-descricao');
+
+    // Preencher o formulário com os dados do assunto
+    document.querySelector('#topicId').value = id;
+    document.querySelector('#descricao').value = descricao;
+
+    // Alterar o título do modal
+    document.querySelector('#title-modal-assunto').textContent = 'Atualizar Assunto';
+
+    // Abrir o modal
+    $(modal).modal('show');
+  }
 });

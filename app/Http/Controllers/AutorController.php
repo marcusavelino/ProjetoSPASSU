@@ -24,11 +24,13 @@ class AutorController extends Controller
         return $autor->load('livros');
     }
 
-    public function update(Request $request, Autor $autor)
+    public function update(Request $request, $id)
     {
+        $autor = Autor::findOrFail($id);
+        
         $autor->update($request->all());
         $autor->livros()->sync($request->input('livros', []));
-        return response()->json($autor, 200);
+        return response()->json($autor->load('livros'), 200);
     }
 
     public function destroy($id)
