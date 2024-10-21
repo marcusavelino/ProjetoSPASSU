@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('relatorio-livros-por-autor', [RelatorioController::class, 'gerarRelatorio']);
+Route::get('relatorio-livros-por-autor', [RelatorioController::class, 'gerarRelatorio'])->name('relatorio-livros-por-autor');

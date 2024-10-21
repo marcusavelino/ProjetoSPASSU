@@ -6,6 +6,9 @@
   <button type="button" class="btn btn-primary my-4" data-toggle="modal" data-target="#modalFormAddNew">
     Adicionar Novo Livro
   </button>
+  <a href="{{ route('relatorio-livros-por-autor') }}" class="btn btn-warning my-4 ml-2" style="color: white;">
+    Gerar Relatório de Livros por Autor
+  </a>
   <h2>Lista de Livros</h2>
   <table id="livrosTable" class="table">
     <thead>
