@@ -14,20 +14,31 @@ class AutorController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'Nome' => 'required|string|max:255',
+            'livros' => 'array',
+            'livros.*' => 'exists:livros,id',
+        ]);
+
         $autor = Autor::create($request->all());
         $autor->livros()->sync($request->input('livros', []));
-        return response()->json($autor, 201);
+        return response()->json($autor->load('livros'), 201);
     }
 
     public function show(Autor $autor)
     {
-        return $autor->load('livros');
+        return response()->json($autor->load('livros'));
     }
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'Nome' => 'required|string|max:255',
+            'livros' => 'array',
+            'livros.*' => 'exists:livros,id',
+        ]);
+
         $autor = Autor::findOrFail($id);
-        
         $autor->update($request->all());
         $autor->livros()->sync($request->input('livros', []));
         return response()->json($autor->load('livros'), 200);

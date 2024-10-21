@@ -21,7 +21,7 @@
           </div>
           <div class="mb-3">
             <label for="Edicao" class="form-label">Edição</label>
-            <input type="text" class="form-control" id="Edicao" name="Edicao" required>
+            <input type="number" class="form-control" id="Edicao" name="Edicao" required>
           </div>
           <div class="mb-3">
             <label for="AnoPublicacao" class="form-label">Ano de Publicação</label>

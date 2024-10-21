@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Autor extends Model
 {
+    use HasFactory;
     protected $primaryKey = 'CodAu';
     protected $fillable = [
         'Nome',
@@ -14,5 +15,10 @@ class Autor extends Model
     public function livros()
     {
         return $this->belongsToMany(Livro::class, 'livro_autor', 'Autor_cod', 'Livro_cod');
+    }
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\AutorFactory::new();
     }
 }

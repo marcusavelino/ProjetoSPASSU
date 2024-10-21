@@ -66,3 +66,8 @@ LEFT JOIN
     Assunto s ON las.Assunto_cod = s.codAs
 GROUP BY 
     a.Nome, l.Titulo, l.Editora, l.Edicao, l.AnoPublicacao;
+
+## TESTES AUTOMATIZADOS
+
+- Comando para realizar teste individual: php artisan test --filter it_can_create_an_autor
+- Teste geral: ./vendor/bin/phpunit
