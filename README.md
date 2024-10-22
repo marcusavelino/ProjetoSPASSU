@@ -117,6 +117,7 @@ Para rodar o projeto, deixei arquivos do Docker preconfigurados no projeto. Ou s
 
 - docker-compose up --build
 - docker-compose exec laravel.test composer install (instalar as dependëncias)
+- docker-compose exec laravel.test composer dump-autoload
 - docker-compose exec app php artisan migrate (para migrar as tabelas do banco de dados)
 
 Caso não possua Docker ou tenha alguma dificuldade, podemos usar o servidor do próprio Laravel:
