@@ -1,31 +1,68 @@
 version: '3.8'
 
 services:
-  app:
+  laravel.test:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
+    image: laravel_sail
     ports:
-      - "8000:8000"
+      - "8001:80"
+    environment:
+      LARAVEL_SAIL: 1
     volumes:
-      - .:/var/www/html
+      - '.:/var/www/html'
+    networks:
+      - sail
     depends_on:
-      - db
+      - mysql
+      - redis
 
-  db:
-    image: mysql:5.7
-    container_name: mysql_db
+  apache:
+    image: 'webdevops/php-apache:alpine'
     ports:
-      - "3306:3306"
-     environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_DATABASE=spassu
-      - DB_USERNAME=root
-      - DB_PASSWORD=
+      - "8000:80"
     volumes:
-      - db_data:/var/lib/mysql
+      - '.:/var/www/html'
+    environment:
+      - WEB_DOCUMENT_ROOT=/var/www/html/public
+    networks:
+      - sail
+
+  mysql:
+    image: 'mysql:8.0'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'spassu'
+      MYSQL_USER: 'spassu'
+      MYSQL_PASSWORD: 'spassu'
+    volumes:
+      - 'sailmysql:/var/lib/mysql'
+    networks:
+      - sail
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    networks:
+      - sail
+
+  node:
+    image: 'node:16-alpine'
+    working_dir: /var/www/html
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - sail
+    command: sh -c "rm -rf node_modules package-lock.json && npm install && npm run dev"
+
+networks:
+  sail:
+    driver: bridge
 
 volumes:
-  db_data:
+  sailmysql:
+    driver: local
