@@ -17,6 +17,7 @@ services:
     depends_on:
       - mysql
       - redis
+    command: sh -c "composer install && composer dump-autoload && php-fpm"
 
   apache:
     image: 'webdevops/php-apache:alpine'
