@@ -116,6 +116,7 @@ Perceba que recebemos dois "checks" verdes e um vermelho. Propositalmente deixam
 Para rodar o projeto, deixei arquivos do Docker preconfigurados no projeto. Ou seja, com o Docker instalado e inicializado, basta clonar o projeto seguir os seguintes passos:
 
 - docker-compose up --build
+- docker-compose exec laravel.test composer install (instalar as dependëncias)
 - docker-compose exec app php artisan migrate (para migrar as tabelas do banco de dados)
 
 Caso não possua Docker ou tenha alguma dificuldade, podemos usar o servidor do próprio Laravel:
